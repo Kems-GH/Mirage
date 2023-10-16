@@ -7,21 +7,25 @@ public class SpawnManager : MonoBehaviour
     public GameObject resourcesPrefab;
     public GameObject MonsterPrefab;
 
-    private float boundHorizontal = 24f;
+    private float boundHorizontal = 17f;
     private float boundVertical = 9f;
     private GameObject player;
+    private GameManager gameManager;
 
     void Start()
     {
+        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
         player = GameObject.Find("Player");
-        Spawn();
+        StartCoroutine(Spawn());
     }
 
-    public void Spawn()
+    public IEnumerator Spawn()
     {
         SpawnResources();
+        yield return new WaitForSeconds(0.5f);
         SpawnMonster();
     }
+
 
     private Vector3 GenerateSpawnPosition(GameObject prefab)
     {
@@ -32,11 +36,13 @@ public class SpawnManager : MonoBehaviour
 
     private void SpawnResources()
     {
+        if(gameManager.gameOver) return;
         Instantiate(resourcesPrefab, GenerateSpawnPosition(resourcesPrefab), resourcesPrefab.transform.rotation);
     }
 
     private void SpawnMonster()
     {
+        if (gameManager.gameOver) return;
         // Spawn a monster at a random position but not too close to the player
         Vector3 spawnPosition = GenerateSpawnPosition(MonsterPrefab);
         while (Vector3.Distance(spawnPosition, player.transform.position) < 5)

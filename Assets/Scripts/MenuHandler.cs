@@ -10,13 +10,6 @@ public class MenuHandler : MonoBehaviour
 
     public void QuitGame()
     {
-        if(Application.isEditor)
-        {
-            UnityEditor.EditorApplication.isPlaying = false;
-        }
-        else
-        {
-            Application.Quit();
-        }
+         Application.Quit();
     }
 }
