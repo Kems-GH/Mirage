@@ -9,11 +9,13 @@ public class PlayerMouvement : MonoBehaviour
     [SerializeField] private AudioClip deathSound;
     
 
-    private float speed = 10f;
+    private float speed = 5f;
     private GameManager gameManager;
     private SpawnManager spawnManager;
     private Animator animator;
     private AudioSource audioSource;
+    private Rigidbody playerRb;
+    private Vector3 moveInput;
 
     private void Start()
     {
@@ -21,9 +23,17 @@ public class PlayerMouvement : MonoBehaviour
         gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
         animator = visual.GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
+        TryGetComponent(out playerRb);
     }
 
-    void Update()
+    private void Update()
+    {
+        if (gameManager.gameOver) return;
+
+        moveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+    }
+
+    void FixedUpdate()
     {
         if (gameManager.gameOver) return;
 
@@ -32,24 +42,12 @@ public class PlayerMouvement : MonoBehaviour
 
     void MovePlayer()
     {
-        // Get the horizontal input
-        float horizontal = Input.GetAxis("Horizontal");
 
-        // Move the player left and right
-        transform.Translate(Vector3.right * horizontal * Time.deltaTime * speed);
+        transform.Translate(moveInput * Time.fixedDeltaTime * speed);
 
-        // Get the vertical input
-        float vertical = Input.GetAxis("Vertical");
-
-        // Move the player up and down
-        transform.Translate(Vector3.forward * vertical * Time.deltaTime * speed);
-
-
-        // the player looks at the movement direction
-        Vector3 movement = new Vector3(horizontal, 0, vertical);
-        if (movement != Vector3.zero)
+        if (moveInput.sqrMagnitude > 0)
         {
-            visual.transform.rotation = Quaternion.LookRotation(movement);
+            visual.transform.rotation = Quaternion.LookRotation(moveInput);
             animator.SetFloat("Speed_f", 1);
         }
         else

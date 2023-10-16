@@ -102,7 +102,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resourcesPrefab: {fileID: 4703168296205856075, guid: ff5379318189a874bbeeae848e1dd761, type: 3}
   visual: {fileID: 177955214729319045}
-  pickUpParticle: {fileID: 0}
+  pickUpParticle: {fileID: 120410, guid: 6636b3078b0905e489f698a11b7a6b6b, type: 3}
   pickUpSound: {fileID: 8300000, guid: 7bd6b897eb5ca4b7d88a205c4a51640c, type: 3}
   deathSound: {fileID: 8300000, guid: a0010a1a0c474473b81729eb770c485f, type: 3}
 --- !u!54 &7239410666745314140
