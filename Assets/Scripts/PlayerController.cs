@@ -1,4 +1,6 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerMouvement : MonoBehaviour
 {
@@ -7,6 +9,8 @@ public class PlayerMouvement : MonoBehaviour
     [SerializeField] private GameObject pickUpParticle;
     [SerializeField] private AudioClip pickUpSound;
     [SerializeField] private AudioClip deathSound;
+    [SerializeField] private AudioClip dashSound;
+    [SerializeField] private Slider energySlider;
     
 
     private float speed = 5f;
@@ -16,6 +20,11 @@ public class PlayerMouvement : MonoBehaviour
     private AudioSource audioSource;
     private Rigidbody playerRb;
     private Vector3 moveInput;
+    private MenuHandler MenuHandler;
+
+    private float dashForce = 5f;
+    private float dashEnergyCost = 20f;
+    private float energy = 100f;
 
     private void Start()
     {
@@ -24,13 +33,38 @@ public class PlayerMouvement : MonoBehaviour
         animator = visual.GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
         TryGetComponent(out playerRb);
+        MenuHandler = GameObject.Find("Canvas").GetComponent<MenuHandler>();
+
+        StartCoroutine(RefreshEnergy());
     }
 
     private void Update()
     {
         if (gameManager.gameOver) return;
+        energySlider.value = energy;
 
         moveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+        moveInput = Vector3.ClampMagnitude(moveInput, 1);
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            MenuHandler.Pause();
+        }
+
+        if(Input.GetKeyDown(KeyCode.Space) && energy > dashEnergyCost)
+        {
+            float distance = dashForce;
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position, moveInput, out hit, 5f))
+            {
+                distance = hit.distance;
+            }
+            
+            transform.position += moveInput * distance;
+            audioSource.clip = dashSound;
+            audioSource.Play();
+            energy -= dashEnergyCost;
+        }
     }
 
     void FixedUpdate()
@@ -42,8 +76,7 @@ public class PlayerMouvement : MonoBehaviour
 
     void MovePlayer()
     {
-
-        transform.Translate(moveInput * Time.fixedDeltaTime * speed);
+        playerRb.velocity = moveInput * speed;
 
         if (moveInput.sqrMagnitude > 0)
         {
@@ -77,6 +110,17 @@ public class PlayerMouvement : MonoBehaviour
             audioSource.Play();
             animator.SetBool("Death_b", true);
             gameManager.GameOver();
+            playerRb.constraints = RigidbodyConstraints.FreezeAll;
+        }
+    }
+
+    private IEnumerator RefreshEnergy()
+    {
+        while (!gameManager.gameOver)
+        {
+            yield return new WaitForSeconds(0.1f);
+            energy += 0.1f;
+            energy = Mathf.Clamp(energy, 0, 100);
         }
     }
 }

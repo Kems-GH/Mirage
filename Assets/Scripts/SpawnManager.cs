@@ -11,9 +11,12 @@ public class SpawnManager : MonoBehaviour
     private float boundVertical = 9f;
     private GameObject player;
     private GameManager gameManager;
+    private AudioSource audioSource;
+
 
     void Start()
     {
+        TryGetComponent(out audioSource);
         gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
         player = GameObject.Find("Player");
         StartCoroutine(Spawn());
@@ -50,6 +53,6 @@ public class SpawnManager : MonoBehaviour
             spawnPosition = GenerateSpawnPosition(MonsterPrefab);
         }
         Instantiate(MonsterPrefab, spawnPosition, MonsterPrefab.transform.rotation);
-        
+        audioSource.Play();
     }
 }

@@ -105,6 +105,8 @@ MonoBehaviour:
   pickUpParticle: {fileID: 120410, guid: 6636b3078b0905e489f698a11b7a6b6b, type: 3}
   pickUpSound: {fileID: 8300000, guid: 7bd6b897eb5ca4b7d88a205c4a51640c, type: 3}
   deathSound: {fileID: 8300000, guid: a0010a1a0c474473b81729eb770c485f, type: 3}
+  dashSound: {fileID: 8300000, guid: 881e3f52c86c94f26a60718d35627cd8, type: 3}
+  energySlider: {fileID: 0}
 --- !u!54 &7239410666745314140
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -113,7 +115,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2554241949232073714}
   serializedVersion: 4
-  m_Mass: 100
+  m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
